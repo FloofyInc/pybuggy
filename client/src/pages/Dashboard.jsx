@@ -217,8 +217,6 @@ class Dashboard extends Component {
         if (this.state.canSubmit) {
             var msg = prompt("Explanation...");
             if (msg && msg !== '') {
-                var code = this.state.currentProblem.code;
-                code = escape(code);
 
                 fetch('/api/submit', {
                     method: 'POST',
@@ -287,40 +285,48 @@ class Dashboard extends Component {
             alert("Change the code before running!");
         }
         else {
-            var code = escape(this.state.currentProblem.code);
-            var endTime = new Date();
-            var timeDiff = endTime - this.state.time; //in ms
-            // strip the ms
-            timeDiff /= 1000;
+            console.log(this.state.currentProblem.code.match(/(input\((.*)\))/g));
+            var detectInput = this.state.currentProblem.code.match(/(input\((.*)\))/g) != null;
+            
+            if (detectInput) {
+                alert("Do not use input(\"...\")!");
+            }
+                else {
+                var code = escape(this.state.currentProblem.code);
+                var endTime = new Date();
+                var timeDiff = endTime - this.state.time; //in ms
+                // strip the ms
+                timeDiff /= 1000;
 
-            // get seconds 
-            var seconds = Math.round(timeDiff);
+                // get seconds 
+                var seconds = Math.round(timeDiff);
 
-            this.setState({canSubmit: true, runcount: this.state.runcount + 1});
+                this.setState({canSubmit: true, runcount: this.state.runcount + 1});
 
-            fetch('/api/run', {
-                method: 'POST',
-                body: JSON.stringify({id: id, code:code, elapsedTime: seconds}),
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    return res.json();
-                } else {
-                    const error = new Error(res.error);
-                    throw error;
-                }
-            })
-            .then(data => {
-                this.setState({output:data.output, currentAttempts: data.attempts});
-            }) 
-            .catch(err => {
-                console.error(err);
-                alert('Error logging in please try again');
-            });
+                fetch('/api/run', {
+                    method: 'POST',
+                    body: JSON.stringify({id: id, code:code, elapsedTime: seconds}),
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.json();
+                    } else {
+                        const error = new Error(res.error);
+                        throw error;
+                    }
+                })
+                .then(data => {
+                    this.setState({output:data.output, currentAttempts: data.attempts});
+                }) 
+                .catch(err => {
+                    console.error(err);
+                    alert('Error logging in please try again');
+                });
+            }
         }
     }
 
@@ -331,9 +337,9 @@ class Dashboard extends Component {
                     <div className="problems-header">Problems</div>
                     {this.state.problems.map(item=>(
                         <Button className='problem' 
-                                variant={this.state.active!=item.id ? "outline-dark" : "dark"} 
+                                variant={this.state.active!==item.id ? "outline-dark" : "dark"} 
                                 key={item.id}
-                                disabled={this.state.active!=item.id ? false : true}
+                                disabled={this.state.active!==item.id ? false : true}
                                 onClick={() => {this.chooseProblem(item.id, item.name, item.description, item.code, item.defaultOutput, false)}}>
                             {item.name}
                         </Button>
@@ -341,9 +347,9 @@ class Dashboard extends Component {
 
                     {this.state.isAdmin ? 
                         <Button className='problem' 
-                                variant={this.state.active!="create-problem-button" ? "outline-danger" : "danger"} 
+                                variant={this.state.active!=="create-problem-button" ? "outline-danger" : "danger"} 
                                 key={'create-problem-button'}
-                                disabled={this.state.active!="create-problem-button"? false : true}
+                                disabled={this.state.active!=="create-problem-button"? false : true}
                                 onClick={() => {this.chooseProblem("create-problem-button",
                                 '', '', '', '', true)}}>
                             Add Problem
@@ -457,7 +463,7 @@ class Dashboard extends Component {
                             <Button className='problem' 
                                     variant="primary" 
                                     onClick={() => {this.submitCode(this.state.active)}}
-                                    disabled={this.state.active === '' && this.state.canSubmit == false}>
+                                    disabled={this.state.active === '' && this.state.canSubmit === false}>
                                 Submit
                             </Button>
                         }

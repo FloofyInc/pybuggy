@@ -108,3 +108,5 @@ dist
 script.py
 
 *backendscript.py
+
+client/build

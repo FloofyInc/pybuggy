@@ -92,7 +92,7 @@ class App extends Component {
             <BrowserRouter>
                 <div className='container'>
                     <div className='nav'>
-                        <div className='logo'>LOGO</div>
+                        <div className='logo'>PyBuggy</div>
                         <div className='nav-cont'>
                             {this.state.isAdmin ?
                                 <div className='admin-tag'>A</div>

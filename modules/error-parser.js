@@ -36,29 +36,29 @@ function parseHelper(type, error, content, lines, callback) {
         error = error.split(".")[1];
     }
 
-    Errors.findByError(error, (err, data) => {
-        if (err || !data || (data && data.length == 0)) {
-            var output = content.concat(lines).join('\n');
-            callback(null, {output: output});
+    var [index, linenumber] = extract_line_number(lines);
+    var formatted = ["Line " + linenumber + ":\r"];
+
+    if (type == 1) {
+        for (var i = index + 1; i < lines.length; i++) {
+            formatted.push(lines[i])
         }
-        else {
-
-            var [index, linenumber] = extract_line_number(lines);
-            var formatted = ["Line " + linenumber + ":\r"];
-
-            if (type == 1) {
-                for (var i = index + 1; i < lines.length; i++) {
-                    formatted.push(lines[i])
-                }
+        var output = content.concat(formatted).join('\n');
+        callback(null, {output: output});
+    }
+    else {
+        Errors.findByError(error, (err, data) => {
+            if (err || !data || (data && data.length == 0)) {
+                var output = content.concat(lines).join('\n');
+                callback(null, {output: output});
             }
             else {
-
                 if (error === ERROR_TYPE) {
                     var filter = 'concatenate';
-                    if (lines[lines,length-1].includes('subscriptable')) {
+                    if (lines[lines.length-1].includes('subscriptable')) {
                         filter = 'subscriptable';
                     }
-                    else if (lines[lines,length-1].includes('iterable')) {
+                    else if (lines[lines.length-1].includes('iterable')) {
                         filter = 'iterable';
                     }
     
@@ -68,28 +68,37 @@ function parseHelper(type, error, content, lines, callback) {
                         }
                         else {
                             var msg = data[0].type2;
-                            formatted.push(msg);                            
+                            if (filter === 'subscriptable') {
+                                var datatype = lines[lines.length - 1].match("'(.*)'")[0];
+                                msg = msg.replace(/<DATATYPE>/g, datatype);
+                            }
+                            else if (filter === 'concatenate') {
+
+                                var datatype1 = lines[lines.length - 1].match("\"(.*)\"")[0];
+                                msg = msg.replace(/<DATATYPE1>/g, "\"str\"");
+                                msg = msg.replace(/<DATATYPE2>/g, datatype1);
+                            }
+                            formatted.push(msg); 
                         }
+                        var output = content.concat(formatted).join('\n');
+                        callback(null, {output: output});
                     });
                 }
                 else {
                     var msg = data[0].type2;
-                    console.log(msg);
     
                     if (error === ERROR_VALUE) {
     
-                    }
-                    else if (error === ERROR_INDENTATION) {
-                    
                     }
                     else if (error === ERROR_SYNTAX) {
                     
                     }
                     else if (error === ERROR_ATTRIBUTE) {
-                    
-                    }
-                    else if (error === ERROR_ZERO_DIVISION) {
-                    
+                        var sections = lines[lines.length - 1].split('attribute');
+                        var datatype = sections[0].match("'(.*)'")[0];
+                        var attribute = sections[1].match("'(.*)'")[0];
+                        msg = msg.replace(/<DATATYPE>/g, datatype);
+                        msg = msg.replace(/<ATTRIBUTE>/g, attribute);
                     }
                     else if (error === ERROR_NAME) {
                         var regex = "'(.*)'";
@@ -98,13 +107,14 @@ function parseHelper(type, error, content, lines, callback) {
                     }
 
                     formatted.push(msg);
+                    var output = content.concat(formatted).join('\n');
+                    callback(null, {output: output});
                 }
             }
+        });
+    }
 
-            var output = content.concat(formatted).join('\n');
-            callback(null, {output: output});
-        }
-    });
+    
 }
 
 function parse(type, output, callback) {

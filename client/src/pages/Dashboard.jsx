@@ -30,6 +30,7 @@ class Dashboard extends Component {
             currentAttempts:0,
             creatingProblem: false,
             canSubmit: false,
+            canRun: false,
             password: '',
             time: 0,
             problemComplete: false,
@@ -112,7 +113,8 @@ class Dashboard extends Component {
             canSubmit:false,
             runcount:0,
             currentAttempts:0,
-            output:output
+            output:output,
+            canRun:false
         });
 
         fetch('/api/user/data/' + id, {
@@ -214,32 +216,34 @@ class Dashboard extends Component {
     submitCode = (id) => {
         if (this.state.canSubmit) {
             var msg = prompt("Explanation...");
-            var code = this.state.currentProblem.code;
-            code = escape(code);
+            if (msg && msg !== '') {
+                var code = this.state.currentProblem.code;
+                code = escape(code);
 
-            fetch('/api/submit', {
-                method: 'POST',
-                body: JSON.stringify({id: id, studentMsg: msg}),
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    return res.json();
-                } else {
-                    const error = new Error(res.error);
-                    throw error;
-                }
-            })
-            .then(data => {
-                this.setState({problemComplete: true});
-            }) 
-            .catch(err => {
-                console.error(err);
-                alert('Error logging in please try again');
-            });
+                fetch('/api/submit', {
+                    method: 'POST',
+                    body: JSON.stringify({id: id, studentMsg: msg}),
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.json();
+                    } else {
+                        const error = new Error(res.error);
+                        throw error;
+                    }
+                })
+                .then(data => {
+                    this.setState({problemComplete: true});
+                }) 
+                .catch(err => {
+                    console.error(err);
+                    alert('Error logging in please try again');
+                });
+            }
         }
         else {
             alert("Run your code first!");
@@ -251,7 +255,7 @@ class Dashboard extends Component {
 
         var curr = this.state.currentProblem;
         curr.code = e;
-        this.setState({currentProblem: curr, canSubmit: this.state.runcount > 0});
+        this.setState({currentProblem: curr, canSubmit: this.state.runcount > 0, canRun: true});
     }
 
     onPassword = (e) => {
@@ -279,40 +283,45 @@ class Dashboard extends Component {
     }
 
     runCode = (id) => {
-        var code = escape(this.state.currentProblem.code);
-        var endTime = new Date();
-        var timeDiff = endTime - this.state.time; //in ms
-        // strip the ms
-        timeDiff /= 1000;
+        if (!this.state.canRun) {
+            alert("Change the code before running!");
+        }
+        else {
+            var code = escape(this.state.currentProblem.code);
+            var endTime = new Date();
+            var timeDiff = endTime - this.state.time; //in ms
+            // strip the ms
+            timeDiff /= 1000;
 
-        // get seconds 
-        var seconds = Math.round(timeDiff);
+            // get seconds 
+            var seconds = Math.round(timeDiff);
 
-        this.setState({canSubmit: true, runcount: this.state.runcount + 1});
+            this.setState({canSubmit: true, runcount: this.state.runcount + 1});
 
-        fetch('/api/run', {
-            method: 'POST',
-            body: JSON.stringify({id: id, code:code, elapsedTime: seconds}),
-            headers: {
-                'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            if (res.status === 200) {
-                return res.json();
-            } else {
-                const error = new Error(res.error);
-                throw error;
-            }
-        })
-        .then(data => {
-            this.setState({output:data.output, currentAttempts: data.attempts});
-        }) 
-        .catch(err => {
-            console.error(err);
-            alert('Error logging in please try again');
-        });
+            fetch('/api/run', {
+                method: 'POST',
+                body: JSON.stringify({id: id, code:code, elapsedTime: seconds}),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    const error = new Error(res.error);
+                    throw error;
+                }
+            })
+            .then(data => {
+                this.setState({output:data.output, currentAttempts: data.attempts});
+            }) 
+            .catch(err => {
+                console.error(err);
+                alert('Error logging in please try again');
+            });
+        }
     }
 
     render() {

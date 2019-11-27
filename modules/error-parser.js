@@ -69,14 +69,26 @@ function parseHelper(type, error, content, lines, callback) {
                         else {
                             var msg = data[0].type2;
                             if (filter === 'subscriptable') {
-                                var datatype = lines[lines.length - 1].match("'(.*)'")[0];
-                                msg = msg.replace(/<DATATYPE>/g, datatype);
+                                var _data = lines[lines.length - 1].match("'(.*)'");
+                                if (_data != null && _data.length > 0) {
+                                    var datatype = _data[0];
+                                    msg = msg.replace(/<DATATYPE>/g, datatype);
+                                }
+                                else {
+                                    msg = lines[lines.length - 1];
+                                }
                             }
                             else if (filter === 'concatenate') {
-
-                                var datatype1 = lines[lines.length - 1].match("\"(.*)\"")[0];
-                                msg = msg.replace(/<DATATYPE1>/g, "\"str\"");
-                                msg = msg.replace(/<DATATYPE2>/g, datatype1);
+                                
+                                var _data = lines[lines.length - 1].match("\"(.*)\"");
+                                if (_data != null && _data.length > 0) {
+                                    var datatype1 = _data[0];
+                                    msg = msg.replace(/<DATATYPE1>/g, "\"str\"");
+                                    msg = msg.replace(/<DATATYPE2>/g, datatype1);
+                                } 
+                                else {
+                                    msg = lines[lines.length - 1];
+                                }
                             }
                             formatted.push(msg); 
                         }
@@ -86,24 +98,29 @@ function parseHelper(type, error, content, lines, callback) {
                 }
                 else {
                     var msg = data[0].type2;
-    
-                    if (error === ERROR_VALUE) {
-    
-                    }
-                    else if (error === ERROR_SYNTAX) {
                     
+                    try {
+                        if (error === ERROR_VALUE) {
+        
+                        }
+                        else if (error === ERROR_SYNTAX) {
+                        
+                        }
+                        else if (error === ERROR_ATTRIBUTE) {
+                            var sections = lines[lines.length - 1].split('attribute');
+                            var datatype = sections[0].match("'(.*)'")[0];
+                            var attribute = sections[1].match("'(.*)'")[0];
+                            msg = msg.replace(/<DATATYPE>/g, datatype);
+                            msg = msg.replace(/<ATTRIBUTE>/g, attribute);
+                        }
+                        else if (error === ERROR_NAME) {
+                            var regex = "'(.*)'";
+                            var variable = lines[lines.length - 1].match(regex)[0];
+                            msg = msg.replace(/<VARIABLE>/g, variable);
+                        }
                     }
-                    else if (error === ERROR_ATTRIBUTE) {
-                        var sections = lines[lines.length - 1].split('attribute');
-                        var datatype = sections[0].match("'(.*)'")[0];
-                        var attribute = sections[1].match("'(.*)'")[0];
-                        msg = msg.replace(/<DATATYPE>/g, datatype);
-                        msg = msg.replace(/<ATTRIBUTE>/g, attribute);
-                    }
-                    else if (error === ERROR_NAME) {
-                        var regex = "'(.*)'";
-                        var variable = lines[lines.length - 1].match(regex)[0];
-                        msg = msg.replace(/<VARIABLE>/g, variable);
+                    catch(e) {
+                        msg = lines[lines.length - 1];
                     }
 
                     formatted.push(msg);

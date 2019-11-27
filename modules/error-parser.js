@@ -83,13 +83,16 @@ function parseHelper(type, error, content, lines, callback) {
                                 var _data = lines[lines.length - 1].match("\"(.*)\"");
                                 if (_data != null && _data.length > 0) {
                                     var datatype1 = _data[0];
-                                    msg = msg.replace(/<DATATYPE1>/g, "\"str\"");
+                                    var _datatype2 = lines[lines.length - 1].split("(")[0].trim().split(" ");
+                                    var datatype2 = _datatype2[_datatype2.length - 1];
+                                    msg = msg.replace(/<DATATYPE1>/g, '"' + datatype2 + '"');
                                     msg = msg.replace(/<DATATYPE2>/g, datatype1);
                                 } 
                                 else {
                                     msg = lines[lines.length - 1];
                                 }
                             }
+
                             formatted.push(msg); 
                         }
                         var output = content.concat(formatted).join('\n');
@@ -101,10 +104,10 @@ function parseHelper(type, error, content, lines, callback) {
                     
                     try {
                         if (error === ERROR_VALUE) {
-        
+                            
                         }
                         else if (error === ERROR_SYNTAX) {
-                        
+                            
                         }
                         else if (error === ERROR_ATTRIBUTE) {
                             var sections = lines[lines.length - 1].split('attribute');

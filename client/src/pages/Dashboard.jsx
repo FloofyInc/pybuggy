@@ -217,7 +217,7 @@ class Dashboard extends Component {
 
     submitCode = (id) => {
         if (this.state.canSubmit) {
-            var msg = prompt("Explanation...");
+            var msg = "disabled"; //prompt("Explanation...");
             if (msg && msg !== '') {
 
                 fetch('/api/submit', {

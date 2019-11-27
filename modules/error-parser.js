@@ -69,6 +69,8 @@ function parseHelper(type, error, content, lines, callback) {
                         else {
                             var msg = data[0].type2;
                             if (filter === 'subscriptable') {
+                                console.log("script", lines);
+
                                 var _data = lines[lines.length - 1].match("'(.*)'");
                                 if (_data != null && _data.length > 0) {
                                     var datatype = _data[0];
@@ -79,6 +81,7 @@ function parseHelper(type, error, content, lines, callback) {
                                 }
                             }
                             else if (filter === 'concatenate') {
+                                console.log("concat", lines);
                                 
                                 var _data = lines[lines.length - 1].match("\"(.*)\"");
                                 if (_data != null && _data.length > 0) {

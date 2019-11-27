@@ -36,6 +36,7 @@ const UserSchema = new Schema(
 let Users = mongoose.model("Users", UserSchema);
 
 function verifyPass(data, password) {
+    if (!data || !password) return false;
 
     return bcrypt.compareSync(password, data.password);;
 }

@@ -82,7 +82,7 @@ function runScript(email, id, code, req, res) {
 
     const { spawn } = require('node-pty');
 
-    var pyProcess = spawn("python3", ["./script.py"]);
+    var pyProcess = spawn("python3.7", ["./script.py"]);
     var result = {stdout:'', stderr:''};
 
     pyProcess.on("data", data => {

@@ -34,7 +34,8 @@ class Dashboard extends Component {
             password: '',
             time: 0,
             problemComplete: false,
-            runcount : 0
+            runcount : 0,
+            currentErrors:[]
         };
     }
 
@@ -114,7 +115,8 @@ class Dashboard extends Component {
             runcount:0,
             currentAttempts:0,
             output:output,
-            canRun:false
+            canRun:false,
+            currentErrors:[]
         });
 
         fetch('/api/user/data/' + id, {
@@ -396,6 +398,7 @@ class Dashboard extends Component {
                                 readOnly: this.state.active === ''
                             }}
                             key={this.state.active + "-editor"}
+                            annotations={this.state.currentErrors}
                         />
                     </div>
                     <div className="dash-content-item right-side">

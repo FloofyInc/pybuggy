@@ -21,7 +21,7 @@ function extract_line_number(lines) {
         
         if (lines[i].includes('line')) {
             var numberPattern = /\d+/g;
-            line = lines[i].match(numberPattern)[0];
+            line = lines[i].split('line')[1].match(numberPattern)[0];
             break;
         }
     }

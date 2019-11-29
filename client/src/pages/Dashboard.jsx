@@ -370,7 +370,7 @@ class Dashboard extends Component {
                                     <Badge pill variant="warning">Incomplete</Badge>
                                 }
                             </div>
-                            <div className='status-item'><Badge variant="light">Attempts <Badge variant="dark">{this.state.currentAttempts}</Badge></Badge></div>
+                            {/* <div className='status-item'><Badge variant="light">Attempts <Badge variant="dark">{this.state.currentAttempts}</Badge></Badge></div> */}
                         
                         </div>
                         <AceEditor

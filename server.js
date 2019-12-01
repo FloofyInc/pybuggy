@@ -85,9 +85,6 @@ function runScript(email, id, code, req, res) {
 
     exec("python3 ./script.py", {timeout:5000}, (err, stdout, stderr) => {
         var result = {stdout:'', stderr:''};
-        console.log("ERR", err);
-        console.log("STDOUT", stdout);
-        console.log("STDERR", stderr);
         result.stdout += stdout;
         result.stdout += stderr;
 

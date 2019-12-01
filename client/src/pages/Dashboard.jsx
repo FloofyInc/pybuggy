@@ -378,10 +378,10 @@ class Dashboard extends Component {
                                 }
                             </div>
                             <div className='status-item'> 
-                                {this.state.running ?
+                                {this.state.active !== '' && this.state.running ?
                                     <Badge pill variant="danger">Running...</Badge>
                                 :
-                                    <Badge pill variant="primary">Not Running</Badge>
+                                    <span></span>
                                 }
                             </div>
                             {/* <div className='status-item'><Badge variant="light">Attempts <Badge variant="dark">{this.state.currentAttempts}</Badge></Badge></div> */}

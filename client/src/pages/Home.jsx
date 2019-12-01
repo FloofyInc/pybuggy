@@ -16,6 +16,7 @@ class Home extends Component {
             firstname: '',
             lastname: '',
             isAdmin: '',
+            id:'',
             parentSet: false
         };
     }
@@ -60,6 +61,9 @@ class Home extends Component {
                     lastname: data.lastname
                 });
                 this.setState({isAdmin: data.isAdmin});
+                this.setState({id:data.id});
+
+                
             }
             
         }) 

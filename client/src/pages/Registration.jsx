@@ -48,6 +48,7 @@ class Registration extends Component {
         .then(data => {
             this.props.setName(data);
             this.props.setAdmin(data.isAdmin);
+            this.props.setId(data.id);
         }) 
         .catch(err => {
             console.error(err);
@@ -133,7 +134,29 @@ class Registration extends Component {
         </form>);
         var page = this.state.isLoggedIn ? this.props.history.push('/') : loginForm;
         return (
-            page
+            <div>
+                <h2>Informed Consent Form & Registration </h2>
+
+                <div><strong>Title:</strong> PYBUGGY Study</div> 
+                <div><strong>Investigators:</strong> Brian Harrington, Rachel D’souza, Angela Zavaleta Burney, Aditi Damale</div>
+
+                <p>I hereby consent to participate in a usability study conducted by the Investigators (listed above) as part of research conducted by the Department of Computer & Mathematical Sciences at the University of Toronto Scarborough.</p>
+
+                <p>By clicking “Submit”, I <strong>agree</strong> to participate in this study and the purpose of this study is to evaluate the usability and effectiveness of a new web application. Activity on this web application will be recorded. </p>
+
+                <p>By clicking “Submit”, I <strong>understand</strong> that:</p>
+                <ul>
+                    <li>The procedures to be used are the coding problems on the app and the questionnaires that will be filled out.</li>
+                    <li>The risks incurred by participating is possibly some frustration when completing the series of tasks.</li>
+                    <li>I may receive compensation in the form of a bonus mark in <strong>CSCA20</strong></li>
+                    <li>I am free to withdraw at any time during the study without the need to give any explanation or penalty.</li>
+                    <li>All materials and results will be kept confidential. Identifying information is collected for the sole purpose of attributing bonus marks. </li>
+                    <li>I can contact the course instructor, Brian Harrington (brian.harrigton@utsc.utoronto.ca) or invigilator Rachel (rachel.dsouza@mail.utoronto.ca) with any questions or concerns.</li>
+                </ul>
+            
+                {page}
+            </div>
+            
         );
       }
     

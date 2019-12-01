@@ -42,6 +42,7 @@ class Logout extends Component {
                 this.props.logout();
                 this.props.setName({firstname:'', lastname:''});
                 this.props.setAdmin(false);
+                this.props.setId("");
                 this.props.history.push('/');
             } else {
                 this.setState({

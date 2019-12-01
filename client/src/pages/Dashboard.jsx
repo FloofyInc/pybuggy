@@ -35,7 +35,8 @@ class Dashboard extends Component {
             time: 0,
             problemComplete: false,
             runcount : 0,
-            currentErrors:[]
+            currentErrors:[],
+            running: true
         };
     }
 
@@ -116,7 +117,8 @@ class Dashboard extends Component {
             currentAttempts:0,
             output:output,
             canRun:false,
-            currentErrors:[]
+            currentErrors:[],
+            running: false
         });
 
         fetch('/api/user/data/' + id, {
@@ -217,7 +219,7 @@ class Dashboard extends Component {
 
     submitCode = (id) => {
         if (this.state.canSubmit) {
-            var msg = "disabled"; //prompt("Explanation...");
+            var msg = prompt("What was the most challenging part of this question?");
             if (msg && msg !== '') {
 
                 fetch('/api/submit', {
@@ -243,6 +245,9 @@ class Dashboard extends Component {
                     console.error(err);
                     alert('Error logging in please try again');
                 });
+            }
+            else {
+                alert("Please write an explanation.");
             }
         }
         else {
@@ -293,7 +298,8 @@ class Dashboard extends Component {
             if (detectInput) {
                 alert("Do not use input(\"...\")!");
             }
-                else {
+            else {
+                this.setState({running: true});
                 var code = escape(this.state.currentProblem.code);
                 var endTime = new Date();
                 var timeDiff = endTime - this.state.time; //in ms
@@ -314,6 +320,7 @@ class Dashboard extends Component {
                     }
                 })
                 .then(res => {
+                    this.setState({running: false});
                     if (res.status === 200) {
                         return res.json();
                     } else {
@@ -368,6 +375,13 @@ class Dashboard extends Component {
                                     <Badge pill variant="success">Complete</Badge>
                                 :
                                     <Badge pill variant="warning">Incomplete</Badge>
+                                }
+                            </div>
+                            <div className='status-item'> 
+                                {this.state.running ?
+                                    <Badge pill variant="danger">Running...</Badge>
+                                :
+                                    <Badge pill variant="primary">Not Running</Badge>
                                 }
                             </div>
                             {/* <div className='status-item'><Badge variant="light">Attempts <Badge variant="dark">{this.state.currentAttempts}</Badge></Badge></div> */}
@@ -451,7 +465,7 @@ class Dashboard extends Component {
                         <Button className='problem' 
                                 variant="danger" 
                                 onClick={() => {this.runCode(this.state.active)}}
-                                disabled={this.state.active === ''}>
+                                disabled={this.state.running}>
                             Run Code
                         </Button>
 

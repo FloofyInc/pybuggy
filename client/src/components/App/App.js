@@ -19,6 +19,7 @@ class App extends Component {
             isLoggedIn:false,
             firstname: '',
             lastname: '',
+            id:'',
             refreshed: true
         };
 
@@ -26,6 +27,7 @@ class App extends Component {
         this.logout = this.logout.bind(this);
         this.setName = this.setName.bind(this);
         this.setAdmin = this.setAdmin.bind(this);
+        this.setId = this.setId.bind(this);
     }
 
     login() {
@@ -38,6 +40,10 @@ class App extends Component {
 
     setName(name) {
         this.setState(name);
+    }
+
+    setId(id) {
+        this.setState({id:id});
     }
 
     setAdmin(isAdmin) {
@@ -75,6 +81,7 @@ class App extends Component {
                     lastname: data.lastname
                 });
                 this.setState({isAdmin: data.isAdmin});
+                this.setState({id:data.id});
             }
             
         }) 
@@ -94,6 +101,11 @@ class App extends Component {
                     <div className='nav'>
                         <div className='logo'>PyBuggy</div>
                         <div className='nav-cont'>
+                            {this.state.id !== '' ?
+                                <div className='userID'>ID: <span className='highlight'>{this.state.id}</span></div>
+                            :
+                                <span></span>
+                            }
                             {this.state.isAdmin ?
                                 <div className='admin-tag'>A</div>
                             :
@@ -107,10 +119,10 @@ class App extends Component {
                     </div>
                     <div className='content'>
                         <Switch>
-                            <Route exact path="/" component={() => <Home login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin}/>} />
-                            <Route exact path="/login" component={() => <Login login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin}/>} />
-                            <Route exact path="/logout" component={() => <Logout login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin}/>} />
-                            <Route exact path="/register" component={() => <Registration login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin}/>} />
+                            <Route exact path="/" component={() => <Home login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
+                            <Route exact path="/login" component={() => <Login login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
+                            <Route exact path="/logout" component={() => <Logout login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin}/>} setId={this.setId}/>
+                            <Route exact path="/register" component={() => <Registration login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
                         </Switch>
                     </div>
                 </div>

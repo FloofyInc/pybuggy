@@ -44,6 +44,7 @@ class Login extends Component {
         .then(data => {
             this.props.setName(data);
             this.props.setAdmin(data.isAdmin);
+            this.props.setId(data.id);
         }) 
         .catch(err => {
             console.error(err);

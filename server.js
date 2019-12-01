@@ -70,7 +70,8 @@ function login(err, data, password, req, res) {
         var user = {
             firstname: data.firstname ,
             lastname: data.lastname,
-            isAdmin: data.admin
+            isAdmin: data.admin,
+            id: data._id
         };
         if (Users.verifyPass(data, password)) return createSession(data.email, req, res, user);
         else res.status(401).json({ error: 0, msg: "Incorrect Password" });
@@ -80,17 +81,15 @@ function login(err, data, password, req, res) {
 
 function runScript(email, id, code, req, res) {
 
-    const { spawn } = require('node-pty');
+    const { exec } = require('child_process');
 
-    var pyProcess = spawn("python3", ["./script.py"]);
-    var result = {stdout:'', stderr:''};
-
-    pyProcess.on("data", data => {
-        result.stdout += data;
-    });
-
-    pyProcess.on("exit", exitCode => {
-        result.stderr = exitCode;
+    exec("python3 ./script.py", {timeout:5000}, (err, stdout, stderr) => {
+        var result = {stdout:'', stderr:''};
+        console.log("ERR", err);
+        console.log("STDOUT", stdout);
+        console.log("STDERR", stderr);
+        result.stdout += stdout;
+        result.stdout += stderr;
 
         Users.findByEmail(email, (err, data) => {
             errorParser.parse(data.type, result.stdout, (err, parsed) => {
@@ -117,8 +116,44 @@ function runScript(email, id, code, req, res) {
     
                 UserData.addAttempt(email, id, attempt, callback);
             });
-        }); 
+        });
     });
+    // var result = {stdout:'', stderr:''};
+
+    // pyProcess.on("data", data => {
+    //     result.stdout += data;
+    // });
+
+    // pyProcess.on("exit", exitCode => {
+    //     result.stderr = exitCode;
+
+    //     Users.findByEmail(email, (err, data) => {
+    //         errorParser.parse(data.type, result.stdout, (err, parsed) => {
+    //             function callback(err, data) {
+    //                 if (err) res.status(200).json({output:parsed.output, attempts:0});
+    //                 else {
+    //                     UserData.getAttempts(email, id, (err, data) => {
+    //                         if (!data) {
+    //                             res.status(200).json({output:parsed.output, attempts:0});
+    //                         }
+    //                         else {
+    //                             res.status(200).json({output:parsed.output, attempts:data.attempts.length});
+    //                         }
+    //                     });
+    //                 }
+                    
+    //             }
+    
+    //             var attempt = {
+    //                 code: code,
+    //                 output: escape(parsed.output),
+    //                 elapsedTime: req.body.elapsedTime
+    //             }
+    
+    //             UserData.addAttempt(email, id, attempt, callback);
+    //         });
+    //     }); 
+    // });
 }
 
 function writeScript(email, id, code, req, res) {
@@ -269,7 +304,8 @@ app.get('/api/checkToken', withAuth, function(req, res) {
             firstname: data.firstname,
             lastname: data.lastname,
             email: data.email,
-            isAdmin: data.admin
+            isAdmin: data.admin,
+            id: data._id
         });
     });
 });

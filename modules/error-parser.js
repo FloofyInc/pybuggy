@@ -14,19 +14,21 @@ const ERROR_ZERO_DIVISION = "ZeroDivisionError";
 const ERROR_NAME = "NameError";
 
 function extract_line_number(lines) {
+    var lnums = []
     var line = -1;
     var i;
 
-    for (i = lines.length - 1; i >= 0; i--) {
+    for (i = 0; i < lines.length; i++) {
         
         if (lines[i].includes('line')) {
             var numberPattern = /\d+/g;
             line = lines[i].split('line')[1].match(numberPattern)[0];
-            break;
+            lnums.push({index:i, line:line});
+            line = -1;
         }
     }
 
-    return [i,line];
+    return lnums;
 }
 
 
@@ -42,13 +44,20 @@ function parseHelper(type, error, content, lines, callback) {
             error = error.split(".")[1];
         }
 
-        var [index, linenumber] = extract_line_number(lines);
-        var formatted = ["Line " + linenumber + ":\r"];
-
+        var lnums = extract_line_number(lines);
+        var formatted = [];
+        for (var i = 0; i < lnums.length; i++) {
+            formatted.push("Line: " + lnums[i].line);
+            formatted.push(lines[lnums[i].index + 1]);
+        }
+        
+        console.log(lines);
         if (type == 1) {
-            for (var i = index + 1; i < lines.length; i++) {
-                formatted.push(lines[i])
-            }
+            // for (var i = index + 1; i < lines.length; i++) {
+            //     formatted.push(lines[i])
+            // }
+            formatted.push(lines[lines.length - 1]);
+
             var output = content.concat(formatted).join('\n');
             callback(null, {output: output});
         }

@@ -37,7 +37,7 @@ const UserDataSchema = new Schema(
     { timestamps: true }
 ); 
 
-let UserData = mongoose.model("UserData", UserDataSchema);
+let UserData = mongoose.model("UserData2", UserDataSchema);
 
 function findByEmail(email, callback) {
     UserData.findOne({email: email}, callback);

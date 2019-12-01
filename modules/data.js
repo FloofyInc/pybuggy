@@ -32,7 +32,7 @@ const ProblemsSchema = new Schema(
     { timestamps: true }
 );
 
-let Problems = mongoose.model("Problems", ProblemsSchema);
+let Problems = mongoose.model("Problems2", ProblemsSchema);
 
 function findByID(wid, callback) {
     Problems.findOne({id: wid}, callback);

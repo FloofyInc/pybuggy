@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form'
 import Badge from 'react-bootstrap/Badge'
 import AceEditor from "react-ace";
 
+import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-github";
 
@@ -438,7 +439,7 @@ class Dashboard extends Component {
                         <div className="console">
                             <AceEditor
                                 placeholder=""
-                                mode="python"
+                                mode="json"
                                 theme="github"
                                 name="console"
                                 className='console-editor'

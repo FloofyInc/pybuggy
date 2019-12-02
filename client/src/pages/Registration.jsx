@@ -13,7 +13,8 @@ class Registration extends Component {
             firstname: '',
             lastname: '',
             type: 0,
-            isLoggedIn: false
+            isLoggedIn: false,
+            working:false
         };
     }
 
@@ -25,35 +26,41 @@ class Registration extends Component {
     }
 
     onSubmit = (event) => {
+        
         event.preventDefault();
-        fetch('/api/signup', {
-            method: 'POST',
-            body: JSON.stringify(this.state),
-            headers: {
-                'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            if (res.status === 200) {
 
-                this.props.login();
-                this.props.history.push('/');
-                return res.json();
-            } else {
-                const error = new Error(res.error);
-                throw error;
-            }
-        })
-        .then(data => {
-            this.props.setName(data);
-            this.props.setAdmin(data.isAdmin);
-            this.props.setId(data.id);
-        }) 
-        .catch(err => {
-            console.error(err);
-            alert('Error logging in please try again');
-        });
+        if (!this.state.working) {
+            this.setState({working:true});
+            fetch('/api/signup', {
+                method: 'POST',
+                body: JSON.stringify(this.state),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                this.setState({working:false});
+                if (res.status === 200) {
+
+                    this.props.login();
+                    this.props.history.push('/');
+                    return res.json();
+                } else {
+                    const error = new Error(res.error);
+                    throw error;
+                }
+            })
+            .then(data => {
+                this.props.setName(data);
+                this.props.setAdmin(data.isAdmin);
+                this.props.setId(data.id);
+            }) 
+            .catch(err => {
+                console.error(err);
+                alert('Error logging in please try again');
+            });
+        }
     }
 
     componentDidMount() {
@@ -95,7 +102,7 @@ class Registration extends Component {
             <input
                 type="text"
                 name="username"
-                placeholder="Username"
+                placeholder="Student #"
                 value={this.state.username}
                 onChange={this.handleInputChange}
                 required
@@ -153,7 +160,13 @@ class Registration extends Component {
                     <li>All materials and results will be kept confidential. Identifying information is collected for the sole purpose of attributing bonus marks. </li>
                     <li>I can contact the course instructor, Brian Harrington (brian.harrigton@utsc.utoronto.ca) or invigilator Rachel (rachel.dsouza@mail.utoronto.ca) with any questions or concerns.</li>
                 </ul>
-            
+                
+                {this.state.working ?
+                    <Badge pill variant="danger">Registering...</Badge>
+                :
+                    <span></span>
+                }
+
                 {page}
             </div>
             

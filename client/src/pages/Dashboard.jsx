@@ -118,7 +118,8 @@ class Dashboard extends Component {
             output:output,
             canRun:false,
             currentErrors:[],
-            running: false
+            running: false,
+            problemComplete: false
         });
 
         fetch('/api/user/data/' + id, {

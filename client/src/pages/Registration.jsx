@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import "./style/Home.css";
 
+import Badge from 'react-bootstrap/Badge'
+
 class Registration extends Component {
 
     constructor(props) {
@@ -160,7 +162,7 @@ class Registration extends Component {
                     <li>All materials and results will be kept confidential. Identifying information is collected for the sole purpose of attributing bonus marks. </li>
                     <li>I can contact the course instructor, Brian Harrington (brian.harrigton@utsc.utoronto.ca) or invigilator Rachel (rachel.dsouza@mail.utoronto.ca) with any questions or concerns.</li>
                 </ul>
-                
+
                 {this.state.working ?
                     <Badge pill variant="danger">Registering...</Badge>
                 :

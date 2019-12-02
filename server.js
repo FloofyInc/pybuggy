@@ -66,7 +66,7 @@ function killSession(email, req, res) {
 }
 
 function login(err, data, password, req, res) {
-    if (!err) {
+    if (!err && data) {
         var user = {
             firstname: data.firstname ,
             lastname: data.lastname,

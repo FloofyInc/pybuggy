@@ -291,7 +291,6 @@ app.delete("/api/problems", withAuth, (req, res) => {
 });
 
 app.get('/api/checkToken', withAuth, function(req, res) {
-    console.log("hellp");
     var token = req.headers.cookie.split("=")[1];
     var decoded = jwt.verify(token, process.env.SECRET);
     var email = decode(decoded.emailhash);

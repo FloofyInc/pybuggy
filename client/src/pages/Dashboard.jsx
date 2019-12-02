@@ -219,7 +219,7 @@ class Dashboard extends Component {
 
     submitCode = (id) => {
         if (this.state.canSubmit) {
-            var msg = prompt("What was the most challenging part of this question?");
+            var msg = prompt("Were any of the bugs challenging? If yes, why?");
             if (msg && msg !== '') {
 
                 fetch('/api/submit', {
@@ -437,7 +437,7 @@ class Dashboard extends Component {
                         <div className="console">
                             <AceEditor
                                 placeholder=""
-                                mode="xml"
+                                mode="python"
                                 theme="github"
                                 name="console"
                                 className='console-editor'

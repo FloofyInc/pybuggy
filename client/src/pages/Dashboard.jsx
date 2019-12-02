@@ -24,7 +24,7 @@ class Dashboard extends Component {
             currentProblem:{
                 name:'',
                 description: '',
-                code:''
+                code:'# Survey: bit.ly/A20prev'
             },
             output:'',
             currentAttempts:0,

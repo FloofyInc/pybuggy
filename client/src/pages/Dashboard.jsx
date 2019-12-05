@@ -296,9 +296,10 @@ class Dashboard extends Component {
         else {
             console.log(this.state.currentProblem.code.match(/(input\((.*)\))/g));
             var detectInput = this.state.currentProblem.code.match(/(input\((.*)\))/g) != null;
+            var detectImport = this.state.currentProblem.code.includes("import");
             
-            if (detectInput) {
-                alert("Do not use input(\"...\")!");
+            if (detectInput || detectImport) {
+                alert("Do not use input(\"...\") OR import!");
             }
             else {
                 this.setState({running: true});

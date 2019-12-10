@@ -45,6 +45,10 @@ function findByEmail(email, callback) {
     Users.findOne({email: email}, callback);
 }
 
+function getAll(callback) {
+    Users.find({}, callback);
+}
+
 function findByUsername(id, callback) {
     Users.findOne({username: id}, callback);
 }
@@ -66,4 +70,4 @@ function createUser(data, callback) {
 }
 
 // export the new Schema so we could modify it using Node.js
-module.exports = {findByEmail: findByEmail, findByUsername:findByUsername, createUser:createUser, verifyPass:verifyPass};
+module.exports = {findByEmail: findByEmail, findByUsername:findByUsername, createUser:createUser, verifyPass:verifyPass, getAll:getAll};

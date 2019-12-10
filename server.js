@@ -219,6 +219,15 @@ app.get("/api/user", withAuth, (req, res) => {
     Users.findByEmail(req.email,callback);
 });
 
+// app.get("/api/user/all", (req, res) => {
+//     function callback(err, data) {
+//         if (err) res.status(404).json({msg:"Error while getting data.", err:err});
+//         res.status(200).json({data: data});
+//     }
+
+//     Users.getAll(callback);
+// });
+
 // Data
 
 app.get("/api/problems", withAuth, (req, res) => {
@@ -438,7 +447,7 @@ app.post("/api/errors", withAuth, (req, res) => {
     Errors.createError(req.body, callback);
 });
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 

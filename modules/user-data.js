@@ -47,9 +47,15 @@ function getAttempts(email, id, callback) {
     UserData.findOne({email: email, id: id}, callback);
 }
 
+function getAllAttempts(id, callback) {
+    UserData.find({id: id}, callback);
+}
+
 function getProblemData(id, callback) {
     UserData.findOne({id: id}, callback);
 }
+
+
 
 function addAttempt(email, id, data, callback) {
     var attempt = {
@@ -124,5 +130,6 @@ module.exports = {
     getProblemData:getProblemData,
     deleteProblem:deleteProblem,
     addAttempt:addAttempt,
-    completeProblem:completeProblem
+    completeProblem:completeProblem,
+    getAllAttempts:getAllAttempts
 };

@@ -219,7 +219,17 @@ app.get("/api/user", withAuth, (req, res) => {
     Users.findByEmail(req.email,callback);
 });
 
-// app.get("/api/user/all", (req, res) => {
+app.get("/api/user/:email", withAuth, (req, res) => {
+    function callback(err, data) {
+        if (err) res.status(404).json({msg:"Error while getting data.", err:err});
+        delete data["password"];
+        res.status(200).json({data: data});
+    }
+
+    Users.findByEmail(req.params.email,callback);
+});
+
+// app.get("/api/users/all", (req, res) => {
 //     function callback(err, data) {
 //         if (err) res.status(404).json({msg:"Error while getting data.", err:err});
 //         res.status(200).json({data: data});
@@ -368,6 +378,26 @@ app.get("/api/user/data/:id", withAuth, (req, res) => {
     };
 
     UserData.getAttempts(email, data.id, callback);
+});
+
+app.get("/api/attempts/:id", withAuth, (req, res) => {
+    var token = req.headers.cookie.split("=")[1];
+    var decoded = jwt.verify(token, process.env.SECRET);
+    var email = decode(decoded.emailhash);
+
+    function callback(err, data) {
+        if (err) res.status(404).json({msg:"Error while getting data.", err:err});
+        else {
+            res.status(200).json({data: data});
+        }
+        
+    }
+
+    var data = {
+        id: req.params.id
+    };
+
+    UserData.getAllAttempts(data.id, callback);
 });
 
 app.post("/api/user/data/:id", withAuth, (req, res) => {

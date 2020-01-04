@@ -6,6 +6,7 @@ import Home from '../../pages/Home';
 import Login from '../../pages/Login';
 import Registration from '../../pages/Registration';
 import Logout from '../../pages/Logout';
+import Stats from '../../pages/Stats';
 
 class App extends Component {
 
@@ -93,7 +94,11 @@ class App extends Component {
     }
 
     render() {
-        var loginButton = this.state.isLoggedIn ? (<div className='nav-item'><Link to="/logout">Logout</Link></div>) : (<div><div className='nav-item'><Link to="/login">Login</Link></div><div className='nav-item'><Link to="/register">Register</Link></div></div>);
+        var loginButton = this.state.isLoggedIn ? (<div className='nav-item'><Link to="/logout">Logout</Link></div>) : (
+        <div>
+            <div className='nav-item'><Link to="/login">Login</Link></div>
+            <div className='nav-item'><Link to="/register">Register</Link></div></div>
+        );
 
         return (
             <BrowserRouter>
@@ -114,6 +119,11 @@ class App extends Component {
                             <div className='firstname'>{this.state.firstname}</div>
                             <div className='lastname'>{this.state.lastname}</div>
                             <div className='nav-item'><Link to="/">Home</Link></div>
+                            {this.state.isAdmin ?
+                                <div className='nav-item'><Link to="/stats">Stats</Link></div>
+                            :
+                                <span></span>
+                            }
                             {loginButton}
                         </div>
                     </div>
@@ -123,6 +133,7 @@ class App extends Component {
                             <Route exact path="/login" component={() => <Login login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
                             <Route exact path="/logout" component={() => <Logout login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>}/>
                             <Route exact path="/register" component={() => <Registration login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
+                            <Route exact path="/stats" component={() => <Stats login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
                         </Switch>
                     </div>
                 </div>

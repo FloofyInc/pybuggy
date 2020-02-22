@@ -186,7 +186,6 @@ function parseData(data, callback) {
         // problem id, email, completed, number of attempts, elapsed time, TA help, account type
         var elpsd = (new Date(item.updatedAt).getTime() - new Date(item.createdAt).getTime())/1000;
         Users.findByEmail(item.email, (err, user) => {
-            console.log(user);
             result.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0, user.type]);
             if (result.length == data.length) callback(null, result);
         });
@@ -225,7 +224,6 @@ app.post('/api/signup', (req, res) => {
 
 app.post('/api/signout', (req, res) => {
     const {emailhash} = req.body;
-    console.log("logout");
     return killSession(decode(emailhash), req, res);
 });
 
@@ -331,7 +329,6 @@ app.delete("/api/problems", withAuth, (req, res) => {
         else {
             if (Users.verifyPass(data, req.body.password)) {
                 Data.deleteProblem(req.body.id, (err) => {
-                    console.log(req.body.id);
                     if (err) res.status(400).json({msg:"Can't delete, try again later."});
                     else res.status(200).json({msg:"sucess"});
                 });

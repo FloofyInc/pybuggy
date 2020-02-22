@@ -18,6 +18,7 @@ const withAuth = require('./modules/middleware');
 var os = require('os');
 var pty = require('node-pty');
 const fs = require('fs');
+var csv = require('csv-express');
 
 const API_PORT = process.env.PORT || 3001;
 const app = express();
@@ -158,6 +159,33 @@ function writeScript(email, id, code, req, res) {
         if (err) res.status(401).json({});
         runScript(email, id, escape(code), req, res);
     });
+}
+
+function processData(res, data) {
+
+    //res.status(200).json({data: data});
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=\"' + 'download-' + Date.now() + '.csv\"');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Pragma', 'no-cache');
+
+    // ta-da! this is cool, right?
+    // stringify return a readable stream, that can be directly piped
+    // to a writeable stream which is "res" (the response object from express.js)
+    // since res is an abstraction over node http's response object which supports "streams"
+    res.csv(parseData(data));
+}
+
+function parseData(data) {
+    var res = []
+
+    data.forEach(item => {
+        // problem id, email, completed, number of attempts, elapsed time, TA help
+        var elpsd = (new Date(item.updatedAt).getTime() - new Date(item.createdAt).getTime())/1000
+        res.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0])
+    });
+
+    return res;
 }
 
 app.use(express.static(path.join(__dirname, 'client/build')));
@@ -304,6 +332,33 @@ app.delete("/api/problems", withAuth, (req, res) => {
             }
             else {
                 res.status(401).json({msg:"Invalid Password."});
+            }
+        }
+    });
+});
+
+app.get("/api/problems/data/:id", withAuth, (req, res) => {
+    var token = req.headers.cookie.split("=")[1];
+    var decoded = jwt.verify(token, process.env.SECRET);
+    var email = decode(decoded.emailhash);
+
+    Users.findByEmail(email, (err, data) => {
+        if (err || !data) {
+            res.status(400).json({msg:"Can't delete, try again later."});
+        } 
+        else {
+            if (data.admin) {
+                const id = req.params.id;
+
+                function callback(err, data) {
+                    if (err) res.status(404).json({msg:"Error while getting workout data.", err:err});
+                    else processData(res, data);
+                }
+
+                UserData.getAllAttempts(id, callback);
+            }
+            else {
+                res.status(401).json({msg:"Unauthorized access."});
             }
         }
     });

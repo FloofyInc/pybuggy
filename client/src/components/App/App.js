@@ -134,6 +134,7 @@ class App extends Component {
                             <Route exact path="/logout" component={() => <Logout login={this.login} logout={this.logout}  setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>}/>
                             <Route exact path="/register" component={() => <Registration login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
                             <Route exact path="/stats" component={() => <Stats login={this.login} logout={this.logout} setName={this.setName} setAdmin={this.setAdmin} setId={this.setId}/>} />
+                            
                         </Switch>
                     </div>
                 </div>

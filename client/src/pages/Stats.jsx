@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Badge from 'react-bootstrap/Badge'
 import AceEditor from "react-ace";
+import Spinner from 'react-bootstrap/Spinner'
 
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-python";
@@ -22,6 +23,7 @@ class Stats extends Component {
         super(props)
         this.state = {
             problemComplete:false,
+            fetching:false,
             problems:[],
             active:'',
             currentProblem:{
@@ -181,7 +183,64 @@ class Stats extends Component {
         });
     }
 
+    downloadStats = (id) => {
+        this.setState({fetching:true});
+        console.log('/api/problems/data/' + id)
+        fetch('/api/problems/data/' + id, {
+            headers: {
+                'Accept':'Content-Type, text/csv, */*',  // It can be used to overcome cors errors
+                'Content-Disposition': 'attachment; filename=\"' + 'download-' + Date.now() + '.csv'
+            }
+        })
+        .then(res => {
+            this.setState({fetching:false});
+            if (res.status === 200) {
+                return res.text();
+            }
+        })
+        .then(text => {
+            const element = document.createElement("a");
+            const file = new Blob([text], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = 'download-' + Date.now() + '.csv';
+            document.body.appendChild(element); // Required for this to work in FireFox
+            element.click();
+        });
+    }
+
     render() {
+        var _downloadBtn = this.state.fetching ?
+            <Button className='dropdown-problems' 
+                variant="danger" 
+                //href={"/api/problems/data/" + this.state.active}
+                disabled={this.state.fetching}>
+                <span>
+                    <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        variant="light"
+                    />
+                    <span className="spacing"></span>
+                    Fetching ...
+                </span>
+            </Button>
+        :
+            <Button className='dropdown-problems' 
+                variant="success" 
+                onClick={() => {this.downloadStats(this.state.active)}}
+                //href={"/api/problems/data/" + this.state.active}
+                disabled={this.state.fetching}>
+                Download Stats
+            </Button>;
+        
+        
+        var downloadBtn = this.state.active !== '' ? 
+            (_downloadBtn)
+        :
+            <span></span>;
         
         return (
             <div className='dash'>
@@ -201,7 +260,12 @@ class Stats extends Component {
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>
-
+                    {this.state.currentProblem.users.length == 0 && this.state.active !== '' ?
+                        <div>LOADING....</div>
+                    :
+                        (downloadBtn)
+                        
+                    }           
                     {this.state.currentProblem.users.map(user=>(
                         
                         <Dropdown className='dropdown-problems dropdown-problems-user'>

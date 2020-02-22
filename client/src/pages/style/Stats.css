@@ -19,7 +19,6 @@
 
 .dropdown-problems-user {
     margin-top: 0px;
-    
 }
 
 .dropdown-problems-item-user {
@@ -32,6 +31,7 @@
     border: solid 1px #666;
 
     overflow: hidden;
+    margin-right: 100px;
 }
 
 .drop-item {

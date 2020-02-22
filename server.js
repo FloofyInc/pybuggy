@@ -173,19 +173,25 @@ function processData(res, data) {
     // stringify return a readable stream, that can be directly piped
     // to a writeable stream which is "res" (the response object from express.js)
     // since res is an abstraction over node http's response object which supports "streams"
-    res.csv(parseData(data));
+    parseData(data, (err, data) => {
+        if (!err || data) res.csv(data);
+        else res.csv([]);
+    });
 }
 
-function parseData(data) {
-    var res = []
+function parseData(data, callback) {
+    var result = []
 
     data.forEach(item => {
-        // problem id, email, completed, number of attempts, elapsed time, TA help
-        var elpsd = (new Date(item.updatedAt).getTime() - new Date(item.createdAt).getTime())/1000
-        res.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0])
+        // problem id, email, completed, number of attempts, elapsed time, TA help, account type
+        var elpsd = (new Date(item.updatedAt).getTime() - new Date(item.createdAt).getTime())/1000;
+        Users.findByEmail(item.email, (err, user) => {
+            console.log(user);
+            result.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0, user.type]);
+            if (result.length == data.length) callback(null, result);
+        });
+        
     });
-
-    return res;
 }
 
 app.use(express.static(path.join(__dirname, 'client/build')));

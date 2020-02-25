@@ -28,7 +28,8 @@ const UserSchema = new Schema(
         firstname: String,
         lastname: String,
         type: String,
-        admin: Boolean
+        admin: Boolean,
+        utorid: String
     },
     { timestamps: true }
 );
@@ -64,10 +65,15 @@ function createUser(data, callback) {
         firstname: data.firstname,
         lastname: data.lastname,
         type:data.type,
-        admin:false
+        admin:false,
+        utorid:''
     };
     Users.create(user, callback);
 }
 
+function addUtorID(selector, utorid, callback) {
+    Users.updateOne(selector, {utorid: utorid}, callback);
+}
+
 // export the new Schema so we could modify it using Node.js
-module.exports = {findByEmail: findByEmail, findByUsername:findByUsername, createUser:createUser, verifyPass:verifyPass, getAll:getAll};
+module.exports = {findByEmail: findByEmail, findByUsername:findByUsername, createUser:createUser, verifyPass:verifyPass, getAll:getAll, addUtorID:addUtorID};

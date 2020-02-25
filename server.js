@@ -183,10 +183,10 @@ function parseData(data, callback) {
     var result = []
 
     data.forEach(item => {
-        // problem id, email, completed, number of attempts, elapsed time, TA help, account type
+        // problem id, email, UTORID, completed, number of attempts, elapsed time, TA help, account type
         var elpsd = (new Date(item.updatedAt).getTime() - new Date(item.createdAt).getTime())/1000;
         Users.findByEmail(item.email, (err, user) => {
-            result.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0, user.type]);
+            result.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0, user.type, user.utorid]);
             if (result.length == data.length) callback(null, result);
         });
         
@@ -511,6 +511,30 @@ app.post("/api/submit", withAuth, (req, res) => {
     };
 
     UserData.completeProblem(data.email, data.id, req.body.studentMsg, callback);
+});
+
+app.post("/api/user/utorids", withAuth, (req, res) => {
+    var token = req.headers.cookie.split("=")[1];
+    var decoded = jwt.verify(token, process.env.SECRET);
+    var email = decode(decoded.emailhash);
+
+    function callback(err, data) {
+        if (err) res.status(404).json({msg:"Error while getting data.", err:err});
+        console.log(data);
+    }
+
+    console.log(req.body);
+    const data = req.body;
+    console.log("\n\n", data);
+
+    data.forEach(item => {
+        var email = item.email;
+        var utorid = item.utorid;
+
+        Users.addUtorID({email: email}, utorid, callback);
+
+    });
+    res.status(200).json({data: "Updating data!"});
 });
 
 app.get("/api/errors/:error", withAuth, (req, res) => {

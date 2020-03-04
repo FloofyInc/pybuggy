@@ -186,7 +186,7 @@ function parseData(data, callback) {
         // problem id, email, UTORID, completed, number of attempts, elapsed time, TA help, account type
         var elpsd = (new Date(item.updatedAt).getTime() - new Date(item.createdAt).getTime())/1000;
         Users.findByEmail(item.email, (err, user) => {
-            result.push([item.id, item.email, Number(item.complete), item.attempts.length, elpsd, 0, user.type, user.utorid]);
+            result.push([item.id, item.email, user.utorid, Number(item.complete), item.attempts.length, elpsd, 0, user.type]);
             if (result.length == data.length) callback(null, result);
         });
         

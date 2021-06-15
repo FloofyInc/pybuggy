@@ -147,7 +147,7 @@ class Registration extends Component {
                 <h2>Informed Consent Form & Registration </h2>
 
                 <div><strong>Title:</strong> PYBUGGY Study</div> 
-                <div><strong>Investigators:</strong> Brian Harrington, Rachel D’souza, Angela Zavaleta Burnuy</div>
+                <div><strong>Investigators:</strong> Brian Harrington, Rachel D’souza, Angela Zavaleta Bernuy</div>
 
                 <p>I hereby consent to participate in a usability study conducted by the Investigators (listed above) as part of research conducted by the Department of Computer & Mathematical Sciences at the University of Toronto Scarborough.</p>
 

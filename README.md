@@ -20,11 +20,11 @@
 ## MongoDB Setup
 
 1. This project is created with MongoDb Cloud. Create your own project/cluster [here](https://www.mongodb.com/cloud) for testing purposes.
-2. Make acopy and rename `mystery-gifts/.env.template` to  `pybuggy/.env`
+2. Make acopy and rename `pybuggy/.env.template` to  `pybuggy/.env`
 3. Edit the all fields in `< ... >` with your mongo cluster information.
 
 ## .env Setup
-> Make acopy and rename `mystery-gifts/.env.template` to  `mystery-gifts/.env` and Edit the all fields in `< ... >`.
+> Make acopy and rename `pybuggy/.env.template` to  `pybuggy/.env` and Edit the all fields in `< ... >`.
 
 ```sh
 # MongoDB connection URL
@@ -76,11 +76,10 @@ npm run dev
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Mystery-Incorporated/mystery-gifts/issues).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/FloofyInc/pybuggy/issues).
 
 Note: All PRs must pass existing unit tests and if any new features are introduced, please add necessary unittests.
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
-
